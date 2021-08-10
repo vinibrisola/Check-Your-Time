@@ -1,4 +1,4 @@
-const mongoose = require('mongoosse');
+const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const salao = new Schema({
@@ -35,6 +35,6 @@ const salao = new Schema({
   }
 });
 
-salao.index({ geo: '2dsphere' })
+salao.index({ geo: '2dsphere' });
 
-module.exports = mongoose, model('Salao', salao);
+module.exports = mongoose.model('Salao', salao);
