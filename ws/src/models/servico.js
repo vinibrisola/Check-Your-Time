@@ -8,39 +8,39 @@ const servico = new Schema({
   },
   titulo: {
     type: String,
-    required: true
+    required: true,
   },
   preco: {
     type: Number,
-    required: true
+    required: true,
   },
   comissao: {
-    type: Number, // % de comissão  sobre o preço
-    required: true
+    type: Number,
+    required: true,
   },
   duracao: {
-    type: Number, // duração em minutos do serviço
-    required: true
+    type: String,
+    required: true,
   },
   recorrencia: {
-    type: Number, // periodo de refação do serviços em dias
-    required: true
+    type: Number,
+    required: true,
+    default: 30,
   },
   descricao: {
     type: String,
-    required: true
+    required: true,
   },
   status: {
     type: String,
     enum: ['A', 'I', 'E'],
     required: true,
-    default: 'A'
+    default: 'A',
   },
   dataCadastro: {
     type: Date,
     default: Date.now,
-  }
+  },
 });
-
 
 module.exports = mongoose.model('Servico', servico);

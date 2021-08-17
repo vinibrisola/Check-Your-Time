@@ -9,18 +9,20 @@ const colaborador = new Schema({
   telefone: {
     type: String,
     required: true,
+    unique: true,
   },
   email: {
     type: String,
     required: true,
+    unique: true,
   },
   senha: {
     type: String,
-    required: true,
+    default: null,
   },
   foto: {
     type: String,
-    required: true,
+    default: null,
   },
   dataNascimento: {
     type: String,
@@ -35,7 +37,7 @@ const colaborador = new Schema({
     type: String,
     enum: ['A', 'I'],
     required: true,
-    default: 'A'
+    default: 'A',
   },
   contaBancaria: {
     titular: {
@@ -67,16 +69,14 @@ const colaborador = new Schema({
       required: true,
     },
   },
-  recepientId: {
+  recipientId: {
     type: String,
-    required: true
+    required: true,
   },
   dataCadastro: {
     type: Date,
     default: Date.now,
-  }
+  },
 });
-
-
 
 module.exports = mongoose.model('Colaborador', colaborador);
