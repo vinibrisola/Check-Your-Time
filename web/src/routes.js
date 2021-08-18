@@ -1,5 +1,22 @@
+import './styles.css'
+
+import Header from "./components/Header";
+import Sidebar from "./components/Sidebar";
+
+
+
+
 const Routes = () => {
-    return <h1>teste</h1>;
+    return(
+    <>
+        <Header />
+        <div ClassName="container-fluid h-100">
+            <div className="row h-100">
+                <Sidebar />
+            </div>
+        </div>
+    </>
+    );
 };
 
 export default Routes;
