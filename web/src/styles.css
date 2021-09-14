@@ -1,8 +1,8 @@
-:root{
+:root {
     --primary: #FF2C73;
     --dark: #21232f;
-    --danger:#d62828;
-    --success:#06d6a0;
+    --danger: #d62828;
+    --success: #06d6a0;
     --white: #f5f6f7;
 }
 
@@ -10,11 +10,121 @@
     height: 100%;
     width: 100%;
     position: fixed;
+    
 }
 
-header{
+
+.overflow-auto {
+    overflow-y: auto;
+}
+
+body,
+html {
+    background-color: var(--white);
+}
+
+header {
     background-color: var(--primary);
 }
-header > div{
+
+header>div {
+    cursor: pointer;
+    transition: 0.5s;
+    padding: 10px 20px;
+}
+
+header>div:hover {
+    background-color: rgba(0, 0, 0, 0.2);
+    transition: 0.5s;
+}
+
+header img {
+    width: 50px;
+    border-radius: 100%;
+    margin-left: 15px;
+}
+
+header span:not(.mdi) {
+    margin-bottom: -10px;
+}
+
+header span.mdi {
+    font-size: 20px;
+    margin-left: 10px;
+}
+
+header small {
+    display: block;
+    margin-top: -20px;
+}
+
+
+sidebar {
+    background-color: black;
     
+    overflow: scroll initial;
+ }
+
+sidebar ul {
+    margin: 0;
+    padding: 0;
+}
+
+sidebar ul li {
+    list-style: none;
+    width: 100%;
+}
+
+sidebar ul li a {
+    width: 100%;
+    list-style: none;
+    color: #fff;
+    opacity: 0.6;
+    display: flex;
+    align-items: center;
+    padding: 5px 0;
+    margin: 2.5px 0;
+    transition: 0.5s;
+    border-radius: 5px;
+    text-decoration: none;
+}
+
+sidebar ul li a.active {
+    opacity: 1;
+    background-color: rgba(0, 0, 0, 0.6);
+}
+
+sidebar ul li a.active .mdi {
+    color: var(--primary);
+}
+
+sidebar ul li a:visited,
+sidebar ul li a:focus {
+    color: #fff;
+    text-decoration: none !important;
+}
+
+sidebar ul li a:hover {
+    background-color: rgba(0, 0, 0, 0.6);
+    cursor: pointer;
+    transition: 0.5s;
+    text-decoration: none;
+    color: #fff !important;
+    opacity: 1;
+}
+
+sidebar ul li span.mdi {
+    font-size: 25px;
+    margin: 0 15px;
+}
+
+sidebar ul li text {
+    font-size: 14px;
+}
+sidebar img{
+    width: 100%;
+    height:10px;
+}
+.calendario{
+    margin-bottom: 80px;
 }
