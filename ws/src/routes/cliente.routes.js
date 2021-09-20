@@ -27,11 +27,11 @@ router.post('/', async (req, res) => {
       const _id = mongoose.Types.ObjectId();
       const cliente = req.body.cliente;
       console.log(cliente);
-      const pagarmeCliente = await pagarme('/customers', {
+      const pagarmeCustomer = await pagarme('/customers', {
         external_id: _id,
         name: cliente.nome,
         type: cliente.documento.tipo === 'cpf' ? 'individual' : 'corporation',
-        country: 'br',
+        country: cliente.endereco.pais,
         email: cliente.email,
         documents: [
           {
@@ -43,10 +43,8 @@ router.post('/', async (req, res) => {
         birthday: cliente.dataNascimento,
       });
 
-      console.log(pagarmeCliente);
-
-      if (pagarmeCliente.error) {
-        throw pagarmeCliente;
+      if (pagarmeCustomer.error) {
+        throw pagarmeCustomer;
       }
 
       newClient = await new Cliente({

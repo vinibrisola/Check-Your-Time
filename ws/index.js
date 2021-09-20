@@ -5,8 +5,6 @@ const busboy = require('connect-busboy');
 const busboyBodyParser = require('busboy-body-parser');
 const cors = require('cors');
 
-
-
 // DATABASE
 require('./database');
 

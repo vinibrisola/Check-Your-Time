@@ -1,9 +1,14 @@
 import types from './types';
 
-export function filterAgendamentos(range) {
-  return { type: types.FILTER_AGENDAMENTOS, range };
+export function filterAgendamentos(start, end) {
+  return {
+    type:'@agendamento/FILTER',
+    start,
+    end,
+  };
 }
 
-export function updateAgendamento(payload) {
-  return { type: types.UPDATE_AGENDAMENTO, payload };
+
+export function updateAgendamento(agendamentos) {
+  return { type: types.UPDATE_AGENDAMENTO, agendamentos };
 }
