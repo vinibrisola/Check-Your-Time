@@ -7,13 +7,11 @@ const cors = require('cors');
 
 // DATABASE
 require('./database');
-
 app.use(morgan('dev'));
 app.use(busboy());
 app.use(busboyBodyParser());
 app.use(express.json());
 app.use(cors());
-
 app.set('port', 8000);
 
 

@@ -6,10 +6,8 @@ const Cliente = require('../models/cliente');
 const Salao = require('../models/salao');
 const Servico = require('../models/servico');
 const Colaborador = require('../models/colaborador');
-
 const moment = require('moment');
 const mongoose = require('mongoose');
-const _ = require('lodash');
 
 const pagarme = require('../services/pagarme');
 const keys = require('../data/keys.json');
@@ -17,14 +15,14 @@ const util = require('../util');
 
 router.post('/filter', async (req, res) => {
   try {
-    const { range, salaoId } = req.body;
+    const { periodo, salaoId } = req.body;
 
     const agendamentos = await Agendamento.find({
-      status: 'A',
+      
       salaoId,
       data: {
-        $gte: moment(range.start).startOf('day'),
-        $lte: moment(range.end).endOf('day'),
+        $gte: moment(periodo.start).startOf('day'),
+        $lte: moment(periodo.end).endOf('day'),
       },
     }).populate([
       { path: 'servicoId', select: 'titulo duracao' },
@@ -50,6 +48,7 @@ router.post('/', async (req, res) => {
       'nome endereco customerId'
     );
     const salao = await Salao.findById(salaoId).select('recipientId');
+
     const servico = await Servico.findById(servicoId).select(
       'preco titulo comissao'
     );
@@ -73,6 +72,7 @@ router.post('/', async (req, res) => {
       card_cvv: '123',
       card_expiration_date: '0922',
       card_holder_name: 'Morpheus Fishburne',
+     
       customer: {
         id: cliente.customerId,
       },
@@ -80,8 +80,8 @@ router.post('/', async (req, res) => {
         // SUBISTITUIR COM OS DADOS DO CLIENTE
         name: cliente.nome,
         address: {
-          country: cliente.endereco.pais.toLowerCase(),
-          state: cliente.endereco.uf.toLowerCase(),
+          country: cliente.endereco.pais,
+          state: cliente.endereco.uf,
           city: cliente.endereco.cidade,
           street: cliente.endereco.logradouro,
           street_number: cliente.endereco.numero,

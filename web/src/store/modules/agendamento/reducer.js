@@ -1,23 +1,17 @@
-import produce from 'immer';
 import types from './types';
+import produce from 'immer';
 const INITIAL_STATE = {
-  components: {
-    modal: false,
-  },
-  agendamento: {},
   agendamentos: [],
 };
 
-function agendamento(state = INITIAL_STATE, action) {
-  switch (action.type) {
+function agendamento(state = INITIAL_STATE, action){
+  switch(action.type) {
     case types.UPDATE_AGENDAMENTO: {
       return produce(state, (draft) => {
-        draft = { ...draft, ...action.payload };
-        return draft;
-      });
+        draft.agendamentos = action.agendamentos;
+      })
     }
-    default:
-      return state;
+    default: return state;
   }
 }
 

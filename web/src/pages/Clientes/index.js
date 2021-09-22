@@ -25,6 +25,9 @@ const Clientes = () => {
   }
 
   const save = () => {
+      
+
+
     dispatch(addCliente());
   }
 
@@ -98,18 +101,20 @@ const Clientes = () => {
               </select>
             </div>
             <div className="form-group col-6">
-              <b>Tipo de Documento</b>
+              <b>Tipo de documento</b>
               <select
                 disabled={form.disabled}
                 className="form-control"
                 value={cliente.documento.tipo}
-                onChange={(e)=> setCliente('documento',{
-                  ...cliente.documento,
-                  tipo: e.target.value,
+                onChange={(e) =>
+                  setCliente('documento', {
+                    ...cliente.documento,
+                    tipo: e.target.value,
                   })
                 }
               >
                 <option value="cpf">CPF</option>
+                <option value="cnpj">CNPJ</option>
               </select>
             </div>
             <div className="form-group col-6">

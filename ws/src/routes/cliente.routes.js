@@ -1,10 +1,10 @@
 const express = require('express');
-const router = express.Router();
 const mongoose = require('mongoose');
-const Cliente = require('../models/cliente');
-const SalaoCliente = require('../models/relationship/salaoCliente');
-const moment = require('moment');
 const pagarme = require('../services/pagarme');
+const Cliente = require('../models/cliente');
+const SalaoCliente = require('../models/relationship/salaoCliente')
+
+const router = express.Router();
 
 router.post('/', async (req, res) => {
   const db = mongoose.connection;
@@ -13,33 +13,36 @@ router.post('/', async (req, res) => {
 
   try {
     const { cliente, salaoId } = req.body;
-    let newClient = null;
+    let newCliente = null;
 
-    const existentClient = await Cliente.findOne({
+    const existentCliente = await Cliente.findOne({
       $or: [
         { email: cliente.email },
         { telefone: cliente.telefone },
-        //{ cpf: cliente.cpf },
+        
       ],
     });
 
-    if (!existentClient) {
+    if (!existentCliente) {
+
+
       const _id = mongoose.Types.ObjectId();
-      const cliente = req.body.cliente;
-      console.log(cliente);
+      
+
+      // CRIANDO customer
       const pagarmeCustomer = await pagarme('/customers', {
         external_id: _id,
         name: cliente.nome,
-        type: cliente.documento.tipo === 'cpf' ? 'individual' : 'corporation',
+        type:cliente.documento.tipo === 'cpf' ? 'individual' : 'corporation',
         country: cliente.endereco.pais,
         email: cliente.email,
         documents: [
           {
             type: cliente.documento.tipo,
-            number: cliente.documento.numero,
+            number:cliente.documento.numero
           },
         ],
-        phone_numbers: ['+55' + cliente.telefone],
+        phone_numbers: [cliente.telefone],
         birthday: cliente.dataNascimento,
       });
 
@@ -47,18 +50,22 @@ router.post('/', async (req, res) => {
         throw pagarmeCustomer;
       }
 
-      newClient = await new Cliente({
+      newCliente = await Cliente({
         _id,
         ...cliente,
-        customerId: pagarmeCliente.data.id,
+        customerId: pagarmeCustomer.data.id,
       }).save({ session });
     }
 
-    const clienteId = existentClient ? existentClient._id : newClient._id;
+    const clienteId = existentCliente
+      ? existentCliente._id
+      : newCliente._id;
 
+    // RELAÇÃO COM O SALÃO
     const existentRelationship = await SalaoCliente.findOne({
       salaoId,
       clienteId,
+      status: {$ne: 'E'},
     });
 
     if (!existentRelationship) {
@@ -68,7 +75,7 @@ router.post('/', async (req, res) => {
       }).save({ session });
     }
 
-    if (existentRelationship && existentRelationship.status === 'I') {
+    if (existentCliente) {
       await SalaoCliente.findOneAndUpdate(
         {
           salaoId,
@@ -79,14 +86,11 @@ router.post('/', async (req, res) => {
       );
     }
 
+   
     await session.commitTransaction();
     session.endSession();
 
-    if (
-      existentRelationship &&
-      existentRelationship.status === 'A' &&
-      existentClient
-    ) {
+    if (existentRelationship && existentCliente) {
       res.json({ error: true, message: 'Cliente já cadastrado!' });
     } else {
       res.json({ error: false });
@@ -100,8 +104,8 @@ router.post('/', async (req, res) => {
 
 router.post('/filter', async (req, res) => {
   try {
-    const clientes = await Cliente.find(req.body.filters);
-    res.json({ error: false, clientes });
+    const cliente = await Cliente.find(req.body.filters);
+    res.json({ error: false, cliente });
   } catch (err) {
     res.json({ error: true, message: err.message });
   }
@@ -109,19 +113,21 @@ router.post('/filter', async (req, res) => {
 
 router.get('/salao/:salaoId', async (req, res) => {
   try {
+    const { salaoId } = req.params;
+
     const clientes = await SalaoCliente.find({
-      salaoId: req.params.salaoId,
-      status: 'A',
+      salaoId,
+      status: { $ne: 'E' },
     })
-      .populate('clienteId')
-      .select('clienteId');
+      .populate('clienteID')
+      .select('clienteId dataCadastro');
 
     res.json({
       error: false,
-      clientes: clientes.map((c) => ({
-        ...c.clienteId._doc,
-        vinculoId: c._id,
-        dataCadastro: moment(c.dataCadastro).format('DD/MM/YYYY'),
+      clientes: clientes.map((vinculo) => ({
+        ...vinculo.clienteId._doc,
+        vinculoId: vinculo._id,
+        dataCadastro: vinculo.dataCadastro,
       })),
     });
   } catch (err) {
@@ -131,7 +137,7 @@ router.get('/salao/:salaoId', async (req, res) => {
 
 router.delete('/vinculo/:id', async (req, res) => {
   try {
-    await SalaoCliente.findByIdAndUpdate(req.params.id, { status: 'I' });
+    await SalaoCliente.findByIdAndUpdate(req.params.id, { status: 'E' });
     res.json({ error: false });
   } catch (err) {
     res.json({ error: true, message: err.message });

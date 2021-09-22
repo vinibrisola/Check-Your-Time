@@ -6,6 +6,10 @@ const arquivos = new Schema({
     type: Schema.Types.ObjectId,
     refPath: 'model',
   },
+  caminho:{
+    type: String,
+    required: true,
+  },
   model: {
     type: String,
     required: true,
