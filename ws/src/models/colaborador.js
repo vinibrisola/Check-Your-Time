@@ -20,10 +20,7 @@ const colaborador = new Schema({
     type: String,
     default: null,
   },
-  foto: {
-    type: String,
-    default: null,
-  },
+  foto: String,
   dataNascimento: {
     type: String,
     required: true,
@@ -54,7 +51,12 @@ const colaborador = new Schema({
     },
     tipo: {
       type: String,
-      required: true,
+      enum: [
+        'conta_corrente',
+        'conta_poupanca',
+        'conta_corrente_conjunta',
+        'conta_poupanca_conjunta'
+      ],
     },
     agencia: {
       type: String,

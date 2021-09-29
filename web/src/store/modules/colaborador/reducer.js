@@ -12,39 +12,39 @@ const INITIAL_STATE = {
        disabled: true,
        saving: false,
     },
-    clientes: [],
-    cliente: {
+    colaboradores: [],
+    servicos : [], 
+    colaborador: {
         email: '',
         nome: '',
         telefone: '',
         dataNascimento: '',
         sexo: 'M',
-        documento: {
-          tipo: 'cpf',
-          numero: '',
-        },
-        endereco: {
-          cidade: '',
-          uf: '',
-          cep: '',
-          logradouro: '',
-          numero: '',
-          pais: 'br',
-        },
+        vinculo: 'A',
+        especialidades: [],
+        contaBancaria: {
+            titular: '',
+            cpfCnpj: '',
+            banco: '',
+            tipo: 'conta_corrente',
+            agencia: '',
+            numero: '',
+            dv: '',
+    },
       },
 }
 
-function cliente(state = INITIAL_STATE, action){
+function colaborador(state = INITIAL_STATE, action){
     switch(action.type){
-        case types.UPDATE_CLIENTE: {
+        case types.UPDATE_COLABORADOR: {
             return produce(state, (draft) =>{
-                draft = { ... draft, ... action.payload};
+                draft = { ...draft, ...action.payload};
                 return draft;
             })
         }
-        case types.RESET_CLIENTE: {
+        case types.RESET_COLABORADOR: {
             return produce(state, (draft) =>{
-                draft.cliente = INITIAL_STATE.cliente;
+                draft.colaborador = INITIAL_STATE.colaborador;
                 return draft;
             })
         }
@@ -53,4 +53,4 @@ function cliente(state = INITIAL_STATE, action){
 }
 
 
-export default cliente;
+export default colaborador;

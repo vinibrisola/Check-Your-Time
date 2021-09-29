@@ -37,9 +37,9 @@ const Sidebar = (props) => {
           </li>
           <li>
             <Link
-              to="/servicos-produtos"
+              to="/servicos"
               className={
-                props.location.pathname === '/servicos-produtos' ? 'active' : ''
+                props.location.pathname === '/servicos' ? 'active' : ''
               }
             >
               <span class="mdi mdi-auto-fix"></span>
@@ -48,9 +48,9 @@ const Sidebar = (props) => {
           </li>
           <li>
             <Link
-              to="/horarios-atendimento"
+              to="/horarios"
               className={
-                props.location.pathname === '/horarios-atendimento'
+                props.location.pathname === '/horarios'
                   ? 'active'
                   : ''
               }

@@ -19,7 +19,7 @@ const salao = new Schema({
   },
   geo: {
     type: String,
-    coordinates: [],
+    coordinates: [Number],
   },
   recipientId: String,
   dataCadastro: {

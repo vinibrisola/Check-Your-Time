@@ -4,7 +4,7 @@ const Salao = require('../models/salao');
 const Servico = require('../models/servico');
 const Horario = require('../models/horario');
 const turf = require('@turf/turf');
-
+const util = require('../util');
 
 router.post('/', async (req, res) => {
   try {
@@ -20,20 +20,19 @@ router.get('/servicos/:salaoId', async (req, res) => {
     const { salaoId } = req.params;
     const servicos = await Servico.find({
       salaoId,
-      status: 'A',
+      status: 'A'
     }).select('_id titulo');
 
     res.json({
-      error: false,
-      servicos: servicos.map((s) => ({ label: s.titulo, value: s._id })),
-    });
+      servicos: servicos.map((s)=>({ label: s.titulo, value: s._id })),
+    })
   } catch (err) {
     res.json({ error: true, message: err.message });
   }
 });
 
 
-router.post('/filter/:id', async (req, res) => {
+router.get('/:id', async (req, res) => {
   try {
     const salao = await Salao.findById(req.params.id).select(req.body.fields);
 

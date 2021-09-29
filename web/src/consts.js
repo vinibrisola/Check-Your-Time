@@ -1,4 +1,5 @@
 export default {
-    salaoId: '61449a5285fe090423052797',
-    clienteId: '6149f44fb01ebd89cba27854',
+    salaoId: '614fc0a7cda02b56765943de',
+    clienteId: '61505ead6d1d2309421e2df2',
+    bucketUrl: 'https://vizu-dev.s3.amazonaws.com',
 };

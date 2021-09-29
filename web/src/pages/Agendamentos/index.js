@@ -50,10 +50,10 @@ const Agendamentos = () => {
 
 
   return (
-    <div className="col p-5 overflow-auto h-100">
+    <div className="col p-4 overflow-auto h-100">
       <div className="row">
-        <div className="col-12">
-          <h2 className="mb-4 mt-0">Agendamento</h2>
+        <div className="calendario col-12">
+          <h2 className="mb-4 mt-0 ">Agendamento</h2>
           <Calendar
             localizer={localizer}
             onRangeChenge={(periodo)=>{

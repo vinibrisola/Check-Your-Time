@@ -7,7 +7,9 @@ import Sidebar from './components/Sidebar';
 
 import Agendamentos from "./pages/Agendamentos";
 import Clientes from './pages/Clientes';
-
+import Colaboradores from './pages/Colaboradores';
+import Servicos from './pages/Servicos';
+import Horarios from './pages/Horarios';
 
 const Routes = () => {
     return(
@@ -24,6 +26,16 @@ const Routes = () => {
                         <Route path="/clientes" exact components={Clientes} >
                             <Clientes />
                         </Route>
+                        <Route path="/colaboradores" exact components={Colaboradores}>
+                            <Colaboradores />
+                        </Route>
+                        <Route path="/servicos" exact components={Servicos}>
+                            <Servicos />
+                        </Route>
+                        <Route path="/horarios" exact components={Horarios}>
+                            <Horarios />
+                        </Route>
+                        
                     </Switch>
                 </Router>
             </div>

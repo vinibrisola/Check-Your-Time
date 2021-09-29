@@ -133,32 +133,32 @@ router.get('/salao/:salaoId', async (req, res) => {
     const { salaoId } = req.params;
     let listaColaboradores = [];
 
-    const colaboradores = await SalaoColaborador.find({
+    const salaoColaboradores = await SalaoColaborador.find({
       salaoId,
       status: { $ne: 'E' },
     })
-      .populate('colaboradorId')
+      .populate({path:'colaboradorId',select: '-senha -recipientId'})
       .select('colaboradorId dataCadastro status');
 
-    for (let colaborador of colaboradores) {
+    for (let vinculo of salaoColaboradores) {
       const especialidades = await ColaboradorServico.find({
-        colaboradorId: colaborador.colaboradorId._id,
-      });
+        colaboradorId: vinculo.colaboradorId._id,
+      })  
 
       listaColaboradores.push({
-        ...colaborador._doc,
-        especialidades: especialidades.map((e) => e.servicoId),
+        ...vinculo._doc,
+        especialidades: especialidades.map((especialidade) => especialidade.servicoId),
       });
     }
 
     res.json({
       error: false,
-      colaboradores: listaColaboradores.map((c) => ({
-        ...c.colaboradorId._doc,
-        vinculoId: c._id,
-        vinculo: c.status,
-        especialidades: c.especialidades,
-        dataCadastro: moment(c.dataCadastro).format('DD/MM/YYYY'),
+      colaboradores: listaColaboradores.map((vinculo) => ({
+        ...vinculo.colaboradorId._doc,
+        vinculoId: vinculo._id,
+        vinculo: vinculo.status,
+        especialidades: vinculo.especialidades,
+        dataCadastro: moment(vinculo.dataCadastro).format('DD/MM/YYYY'),
       })),
     });
   } catch (err) {

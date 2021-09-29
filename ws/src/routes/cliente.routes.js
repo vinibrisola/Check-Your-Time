@@ -104,8 +104,9 @@ router.post('/', async (req, res) => {
 
 router.post('/filter', async (req, res) => {
   try {
-    const cliente = await Cliente.find(req.body.filters);
-    res.json({ error: false, cliente });
+    
+    const clientes = await Cliente.find(req.body.filters);
+    res.json({ error: false, clientes });
   } catch (err) {
     res.json({ error: true, message: err.message });
   }
@@ -119,9 +120,9 @@ router.get('/salao/:salaoId', async (req, res) => {
       salaoId,
       status: { $ne: 'E' },
     })
-      .populate('clienteID')
+      .populate('clienteId')
       .select('clienteId dataCadastro');
-
+    
     res.json({
       error: false,
       clientes: clientes.map((vinculo) => ({
