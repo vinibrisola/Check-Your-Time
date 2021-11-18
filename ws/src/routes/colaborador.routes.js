@@ -1,6 +1,5 @@
 const express = require('express');
 const mongoose = require('mongoose');
-
 const router = express.Router();
 const Colaborador = require('../models/colaborador');
 const SalaoColaborador = require('../models/relationship/salaoColaborador');
@@ -8,9 +7,7 @@ const ColaboradorServico = require('../models/relationship/colaboradorServico');
 const moment = require('moment');
 const pagarme = require('../services/pagarme');
 
-/*
-  FAZER NA #01
-*/
+
 router.post('/', async (req, res) => {
   const db = mongoose.connection;
   const session = await db.startSession();
@@ -45,24 +42,24 @@ router.post('/', async (req, res) => {
       }
 
       // CRIANDO RECEBEDOR
-      const pargarmeReceiver = await pagarme('/recipients', {
+      const pagarmeRecipient = await pagarme('/recipients', {
         bank_account_id: pagarmeBankAccount.data.id,
         transfer_interval: 'daily',
         transfer_enabled: true,
       });
 
-      if (pagarmeBankAccount.error) {
-        throw pargarmeReceiver;
+      if (pagarmeRecipient.error) {
+        throw pagarmeRecipient;
       }
 
       newColaborador = await new Colaborador({
         ...colaborador,
-        recipientId: pargarmeReceiver.data.id,
-      }).save({ session });
+        recipientId: pagarmeRecipient.id,
+      }).save({session});
     }
 
     const colaboradorId = existentColaborador
-      ? existentColaborador._id
+      ? existentColaborador._id 
       : newColaborador._id;
 
     // RELAÇÃO COM O SALÃO
@@ -76,18 +73,12 @@ router.post('/', async (req, res) => {
         salaoId,
         colaboradorId,
         status: colaborador.vinculo,
-      }).save({ session });
+      }).save({session});
     }
 
-    if (existentRelationship && existentRelationship.status === 'I') {
-      await SalaoColaborador.findOneAndUpdate(
-        {
-          salaoId,
-          colaboradorId,
-        },
-        { status: 'A' },
-        { session }
-      );
+    if(existentColaborador) {
+        await SalaoColaborador.findOneAndUpdate({
+        salaoId, colaboradorId,}, { status: colaborador.vinculo }, { session });
     }
 
     // RELAÇÃO COM OS SERVIÇOS / ESPECIALIDADES
@@ -101,7 +92,7 @@ router.post('/', async (req, res) => {
     await session.commitTransaction();
     session.endSession();
 
-    if (existentRelationship && existentColaborador) {
+    if ( existentColaborador && existentRelationship) {
       res.json({ error: true, message: 'Colaborador já cadastrado!' });
     } else {
       res.json({ error: false });
@@ -113,9 +104,7 @@ router.post('/', async (req, res) => {
   }
 });
 
-/*
-  FAZER NA #01
-*/
+
 router.post('/filter', async (req, res) => {
   try {
     const colaboradores = await Colaborador.find(req.body.filters);
@@ -125,9 +114,6 @@ router.post('/filter', async (req, res) => {
   }
 });
 
-/*
-  FAZER NA #01
-*/
 router.get('/salao/:salaoId', async (req, res) => {
   try {
     const { salaoId } = req.params;
@@ -137,13 +123,13 @@ router.get('/salao/:salaoId', async (req, res) => {
       salaoId,
       status: { $ne: 'E' },
     })
-      .populate({path:'colaboradorId',select: '-senha -recipientId'})
+      .populate('colaboradorId')
       .select('colaboradorId dataCadastro status');
 
     for (let vinculo of salaoColaboradores) {
       const especialidades = await ColaboradorServico.find({
         colaboradorId: vinculo.colaboradorId._id,
-      })  
+      });
 
       listaColaboradores.push({
         ...vinculo._doc,
@@ -166,34 +152,25 @@ router.get('/salao/:salaoId', async (req, res) => {
   }
 });
 
-/*
-  FAZER NA #01
-*/
+
 router.put('/:colaboradorId', async (req, res) => {
   try {
     const { vinculo, vinculoId, especialidades } = req.body;
     const { colaboradorId } = req.params;
 
-    await Colaborador.findByIdAndUpdate(colaboradorId, req.body);
+    await SalaoColaborador.findByIdAndUpdate(vinculoId, { status: vinculo });
+    
 
-    // ATUALIZANDO VINCULO
-    if (vinculo) {
-      await SalaoColaborador.findByIdAndUpdate(vinculoId, { status: vinculo });
-    }
-
-    // ATUALIZANDO ESPECIALIDADES
-    if (especialidades) {
-      await ColaboradorServico.deleteMany({
+    await ColaboradorServico.deleteMany({
         colaboradorId,
-      });
+    });
 
-      await ColaboradorServico.insertMany(
-        especialidades.map((servicoId) => ({
-          servicoId,
-          colaboradorId,
-        }))
-      );
-    }
+    await ColaboradorServico.insertMany(
+      especialidades.map((servicoId) => ({
+        servicoId,
+        colaboradorId,
+      }))
+    );
 
     res.json({ error: false });
   } catch (err) {

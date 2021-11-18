@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const Salao = require('../models/salao');
 
-
 router.post('/login', async (req,res)=>{
     try{
 
@@ -19,5 +18,7 @@ router.post('/login', async (req,res)=>{
         res.json({ error: true, message: err.message });
     }
 })
+
+
 
 module.exports =router;

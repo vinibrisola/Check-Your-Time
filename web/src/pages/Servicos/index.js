@@ -1,9 +1,10 @@
 import { useEffect } from 'react';
-import { Button, Drawer, Modal,Icon, TagPicker, SelectPicker, Tag,DatePicker,Uploader } from 'rsuite';
+import { Button, Drawer, Modal,Icon, TagPicker, SelectPicker, Tag,DatePicker,Uploader,Notification, } from 'rsuite';
 import Table from '../../components/Table';
 import 'rsuite/dist/styles/rsuite-default.css';
 import moment from 'moment';
 import consts from '../../consts';
+import util from '../../services/util';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { allServicos, updateServico, addServico, removeServico,removeArquivo,resetServico } from '../../store/modules/servico/actions';
@@ -11,32 +12,51 @@ import { allServicos, updateServico, addServico, removeServico,removeArquivo,res
 
 const Servicos = () => {
 
-  const dispatch = useDispatch();
-  const { servicos, form, behavior, components,servico } = useSelector((state) => state.servico);
+const dispatch = useDispatch();
+const { servicos, form, behavior, components,servico } = useSelector((state) => state.servico);
 
-  const setComponent = (component,state) => {
-      dispatch(updateServico({
-        components: { ...components, [component]: state },
-      })
-    )
+const setComponent = (component,state) => {
+    dispatch(updateServico({
+      components: { ...components, [component]: state },
+    })
+  )
+}
+const setServico = (key, value) => {
+  dispatch(
+    updateServico({
+      servico: { ...servico, [key]: value },
+    })
+  );
+}
+
+
+
+const save = () => {
+  if (
+    !util.allFields(servico, [
+      'titulo',
+      'preco',
+      'comissao',
+      'duracao',
+      'descricao',
+      'status',
+      'arquivos',
+    ])
+  ) {
+    // DISPARAR O ALERTA
+    Notification.error({
+      placement: 'topStart',
+      title: 'Calma lá!',
+      description: 'Antes de prosseguir, preencha todos os campos!',
+    });
+    return false;
   }
-  const setServico = (key, value) => {
-    dispatch(
-      updateServico({
-        servico: { ...servico, [key]: value },
-      })
-    );
-  }
+  dispatch(addServico());
+}; 
 
-
-
-  const save = () => {
-    dispatch(addServico());
-  }; 
-
-  const remove = () => {
-    dispatch(removeServico());
-  }
+const remove = () => {
+  dispatch(removeServico());
+}
 
 
 
@@ -244,11 +264,13 @@ const Servicos = () => {
                 label: 'Titulo',
                 key: 'titulo',
                 fixed: true,
-                width: 200
+                width: 200,
+                sortable: true,
               },
               {
                 label: 'R$ Preço',
-                content: (servico) => `R$ ${servico.preco.toFixed(2)}`
+                content: (servico) => `R$ ${servico.preco.toFixed(2)}`,
+                sortable: true,
               },
               {
                 label: '% Comissão',

@@ -2,12 +2,12 @@ const moment = require('moment');
 
 module.exports = {
   SLOT_DURATION: 30, // MINUTOS
-  isOpened: async (horarios) => {
+  isOpened: (horarios) => {
     // VERIFICANDO SE EXISTE REGISTRO NAQUELE DIA DA SEMANA
-    const horariosDia = horarios.filter((h) => h.dias.includes(moment().day()));
-    if (horariosDia.length > 0) {
+    const espacos = horarios.filter((h) => h.dias.includes(moment().day()));
+    if (espacos.length > 0) {
       // VERIFICANDO HORARIOS
-      for (let h of horariosDia) {
+      for (let h of espacos) {
         const inicio = moment(moment(h.inicio).format('HH:mm'), 'HH:mm:ss');
         const fim = moment(moment(h.fim).format('HH:mm'), 'HH:mm:ss');
         if (moment().isBetween(inicio, fim)) {

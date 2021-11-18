@@ -3,17 +3,22 @@ import { updateCliente,allClientes as allClientesAction,resetCliente } from './a
 import types from './types';
 import api from '../../../services/api';
 import consts from '../../../consts';
-
+import { notification } from '../../../services/rsuite';
 
 
 export function* allClientes(){
-  const { form } = yield select(state => state.cliente);
+  const { form } = yield select((state) => state.cliente);
   try{
     yield put(updateCliente({ form: {...form, filtering: true}}));
     const { data: res } = yield call(api.get,`/cliente/salao/${consts.salaoId}`);
     yield put(updateCliente({ form: {...form, filtering: false}}));
-    if(res.error){
-      alert(res.message);
+    if (res.error) {
+      // ALERT DO RSUITE
+      notification('error', {
+        placement: 'topStart',
+        title: 'Ops...',
+        description: res.message,
+      });
       return false;
     }
 
@@ -21,18 +26,27 @@ export function* allClientes(){
 
   } catch (err) {
     yield put(updateCliente({ form: {...form, filtering: false}}));
-    alert(err.message);
+    notification('error', {
+      placement: 'topStart',
+      title: 'Ops...',
+      description: err.message,
+    });
   }
 }
 
 export function* filterClientes(){
-  const { form, cliente } = yield select(state => state.cliente);
+  const { form, cliente } = yield select((state) => state.cliente);
   try{
     yield put(updateCliente({ form: {...form, filtering: true}}));
     const { data: res } = yield call(api.post,`/cliente/filter`,{ filters: { email: cliente.email,status:'A'}, });
     yield put(updateCliente({ form: {...form, filtering: false}}));
-    if(res.error){
-      alert(res.message);
+    if (res.error) {
+      // ALERT DO RSUITE
+      notification('error', {
+        placement: 'topStart',
+        title: 'Ops...',
+        description: res.message,
+      });
       return false;
     }
     if(res.clientes.length > 0) {
@@ -45,7 +59,11 @@ export function* filterClientes(){
 
   } catch (err) {
     yield put(updateCliente({ form: {...form, filtering: false}}));
-    alert(err.message);
+    notification('error', {
+      placement: 'topStart',
+      title: 'Ops...',
+      description: err.message,
+    });
   }
 }
 export function* addCliente(){
@@ -55,17 +73,31 @@ export function* addCliente(){
     const { data: res } = yield call(api.post,`/cliente`,{ salaoId: consts.salaoId, cliente });
     yield put(updateCliente({ form: {...form, saving: false}}));
     
-    if(res.error){
-      alert(res.message);
+    if (res.error) {
+      // ALERT DO RSUITE
+      notification('error', {
+        placement: 'topStart',
+        title: 'Ops...',
+        description: res.message,
+      });
       return false;
     }
     
     yield put(allClientesAction());
     yield put(updateCliente({ components: {...components, drawer: false}}));
     yield put(resetCliente());
+    notification('success', {
+      placement: 'topStart',
+      title: 'Feitoooo!!',
+      description: 'Cliente salvo com sucesso!',
+    });
   } catch (err) {
     yield put(updateCliente({ form: {...form, saving: false}}));
-    alert(err.message);
+    notification('error', {
+      placement: 'topStart',
+      title: 'Ops...',
+      description: err.message,
+    });
   }
 }
 export function* unlinkCliente(){
@@ -75,17 +107,31 @@ export function* unlinkCliente(){
     const { data: res } = yield call(api.delete,`/cliente/vinculo/${cliente.vinculoId}`);
     yield put(updateCliente({ form: {...form, saving: false}}));
     
-    if(res.error){
-      alert(res.message);
+    if (res.error) {
+      // ALERT DO RSUITE
+      notification('error', {
+        placement: 'topStart',
+        title: 'Ops...',
+        description: res.message,
+      });
       return false;
     }
     
     yield put(allClientesAction());
     yield put(updateCliente({ components: {...components, drawer: false, confirmDelete: false}}));
     yield put(resetCliente());
+    notification('success', {
+      placement: 'topStart',
+      title: 'Tudo certo',
+      description: 'O cliente foi desvinculado com sucesso!',
+    });
   } catch (err) {
     yield put(updateCliente({ form: {...form, saving: false}}));
-    alert(err.message);
+    notification('error', {
+      placement: 'topStart',
+      title: 'Ops...',
+      description: err.message,
+    });
   }
 }
 

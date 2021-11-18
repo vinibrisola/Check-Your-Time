@@ -1,12 +1,12 @@
 import { useEffect } from 'react';
-import { Button, Drawer, Modal,Icon, TagPicker, SelectPicker } from 'rsuite';
+import { Button, Drawer, Modal,Icon, TagPicker, SelectPicker,Notification,Message } from 'rsuite';
 import Table from '../../components/Table';
 import 'rsuite/dist/styles/rsuite-default.css';
 import moment from 'moment';
 import bancos from '../../data/bancos.json';
 import { useDispatch, useSelector } from 'react-redux';
 import { allColaboradores, updateColaborador, filterColaboradores, addColaborador, unlinkColaborador, allServicos } from '../../store/modules/colaborador/actions';
-
+import util from '../../services/util';
 
 const Colaboradores = () => {
 
@@ -41,6 +41,33 @@ const Colaboradores = () => {
   }
 
   const save = () => {
+    if (
+      !util.allFields(colaborador, [
+        'email',
+        'nome',
+        'telefone',
+        'dataNascimento',
+        'sexo',
+        'vinculo',
+        'especialidades',
+      ]) ||
+      !util.allFields(colaborador.contaBancaria, [
+        'titular',
+        'cpfCnpj',
+        'banco',
+        'tipo',
+        'agencia',
+        'numero',
+      ])
+    ) {
+      // DISPARAR O ALERTA
+      Notification.error({
+        placement: 'topStart',
+        title: 'Calma lá!',
+        description: 'Antes de prosseguir, preencha todos os campos!',
+      });
+      return false;
+    }
     dispatch(addColaborador());
   }; 
 
@@ -156,7 +183,7 @@ const Colaboradores = () => {
                   data={servicos}
                   disabled={form.disabled && behavior === 'create'}
                   value={colaborador.especialidades}
-                  onChange={(value) => setColaborador('especialidades', value)}
+                  onChange={(especialidades) => setColaborador('especialidades', especialidades)}
                 />
               </div>
             </div>
@@ -319,11 +346,10 @@ const Colaboradores = () => {
             loading={form.filtering}
             data={colaboradores} 
             config={[
-              {label: 'Nome', key: 'nome', width:200,fixed:true},
-              {label: 'E-mail', key: 'email', width: 200 },
-              {label: 'Telefone', key: 'telefone', width: 200 },
-              {label: 'Sexo', content: (colaborador) => colaborador.sexo === "M" ? "Masculino" : "Feminino" , width: 200 },
-              {label: 'Data Cadastro', content: (colaborador) => moment(colaborador.dataCadastro).format('DD/MM/YYYY'), width: 200 }
+              {label: 'Nome', key: 'nome', width:200,fixed:true,sortable: true,},
+              {label: 'E-mail', key: 'email', width: 200,sortable: true, },
+              {label: 'Telefone', key: 'telefone', width: 200,sortable: true, },
+              {label: 'Sexo', content: (colaborador) => colaborador.sexo === "M" ? "Masculino" : "Feminino" , width: 200,sortable: true, },
             ]}
             actions={(colaborador)=> (
               <Button color="blue" size="xs">Ver informações</Button>

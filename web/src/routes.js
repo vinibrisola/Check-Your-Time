@@ -10,14 +10,18 @@ import Clientes from './pages/Clientes';
 import Colaboradores from './pages/Colaboradores';
 import Servicos from './pages/Servicos';
 import Horarios from './pages/Horarios';
+import Vagas from './pages/Vagas';
 
 const Routes = () => {
+
+
     return(
     <>
         <Header />
         <div className="container-fluid h-100">
             <div className="row h-100">
                 <Router>
+                
                     <Sidebar />
                     <Switch>
                         <Route path="/" exact components={Agendamentos}>
@@ -35,7 +39,9 @@ const Routes = () => {
                         <Route path="/horarios" exact components={Horarios}>
                             <Horarios />
                         </Route>
-                        
+                        <Route path="/vagas" exact components={Vagas}>
+                            <Vagas  />
+                        </Route>
                     </Switch>
                 </Router>
             </div>

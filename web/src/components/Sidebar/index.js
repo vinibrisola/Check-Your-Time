@@ -3,15 +3,15 @@ import { Link, withRouter } from "react-router-dom";
 import logo from '../../assets/logopreto.png';
 
 
-const Sidebar = (props) => {
+const Sidebar = ({location}) => {
     return (
-      <sidebar className="col-2" >
+      <sidebar className="col-md-2 col-2" >
         <img src={logo} class="img-fluid px-5 py-6" />
         <ul className="p-0 m-0">
           <li>
             <Link
               to="/"
-              className={props.location.pathname === '/' ? 'active' : ''}
+              className={location.pathname === '/' ? 'active' : ''}
             >
               <span class="mdi mdi-calendar-check"></span>
               <text>Agendamentos</text>
@@ -20,7 +20,7 @@ const Sidebar = (props) => {
           <li>
             <Link
               to="/clientes"
-              className={props.location.pathname === '/clientes' ? 'active' : ''}
+              className={location.pathname === '/clientes' ? 'active' : ''}
             >
               <span class="mdi mdi-account-multiple"></span>
               <text>Clientes</text>
@@ -29,7 +29,7 @@ const Sidebar = (props) => {
           <li>
             <Link
               to="/colaboradores"
-              className={props.location.pathname === '/colaboradores' ? 'active' : ''}
+              className={location.pathname === '/colaboradores' ? 'active' : ''}
             >
               <span class="mdi mdi-card-account-details-outline"></span>
               <text>Colaboradores</text>
@@ -39,7 +39,7 @@ const Sidebar = (props) => {
             <Link
               to="/servicos"
               className={
-                props.location.pathname === '/servicos' ? 'active' : ''
+                location.pathname === '/servicos' ? 'active' : ''
               }
             >
               <span class="mdi mdi-auto-fix"></span>
@@ -50,7 +50,7 @@ const Sidebar = (props) => {
             <Link
               to="/horarios"
               className={
-                props.location.pathname === '/horarios'
+                location.pathname === '/horarios'
                   ? 'active'
                   : ''
               }
@@ -59,6 +59,20 @@ const Sidebar = (props) => {
               <text>Horarios</text>
             </Link>
           </li>
+          <li>
+            <Link
+              to="/vagas"
+              className={
+                location.pathname === '/vagas'
+                  ? 'active'
+                  : ''
+              }
+            >
+              <span class="mdi mdi-newspaper"></span>
+              <text>Aviso de vagas</text>
+            </Link>
+          </li>
+          
         </ul>
       </sidebar>
     );

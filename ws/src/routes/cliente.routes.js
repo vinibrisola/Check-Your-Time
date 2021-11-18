@@ -42,7 +42,7 @@ router.post('/', async (req, res) => {
             number:cliente.documento.numero
           },
         ],
-        phone_numbers: [cliente.telefone],
+        phone_numbers: ['+55' + cliente.telefone],
         birthday: cliente.dataNascimento,
       });
 

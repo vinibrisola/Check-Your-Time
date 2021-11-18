@@ -1,10 +1,10 @@
 import { useEffect } from 'react';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
-import { Drawer,TagPicker,DatePicker,Button,Modal,Icon } from 'rsuite';
+import { Drawer,TagPicker,DatePicker,Button,Modal,Icon,Notification } from 'rsuite';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { allHorarios,allServicos,updateHorario,filterColaboradores,addHorario,removeHorario } from '../../store/modules/horario/actions';
 import { useDispatch, useSelector} from 'react-redux';
-
+import util from '../../services/util';
 import moment from 'moment';
 import 'moment/locale/pt-br';
 moment.locale('pt-br');
@@ -68,12 +68,29 @@ const setComponent = (component, state) => {
 };
 const setHorario = (key, value) => {
     dispatch(
-      updateHorario({
+        updateHorario({
         horario: { ...horario, [key]: value },
-      })
+        })
     );
-  };
+};
 const save = () => {
+if (
+    !util.allFields(horario, [
+        'dias',
+        'inicio',
+        'fim',
+        'especialidades',
+        'colaboradores',
+    ])
+    ) {
+    // DISPARAR O ALERTA
+    Notification.error({
+        placement: 'topStart',
+        title: 'Calma lá!',
+        description: 'Antes de prosseguir, preencha todos os campos!',
+    });
+    return false;
+    }
     dispatch(addHorario());
 };
 
@@ -88,12 +105,12 @@ useEffect(()=>{
 
 useEffect(()=>{
     dispatch(filterColaboradores());
-},[])
+},[horario.especialidades])
 
 
     return (
         <div className="col p-5 overflow-auto h-100">
-           <Drawer
+            <Drawer
                 show={components.drawer}
                 size="sm"
                 onHide={() => setComponent('drawer', false)}

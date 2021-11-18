@@ -1,5 +1,5 @@
 :root {
-    --primary: #FF2C73;
+    --primary: #f27649;
     --dark: #21232f;
     --danger: #d62828;
     --success: #06d6a0;
@@ -25,6 +25,7 @@ html {
 
 header {
     background-color: var(--primary);
+
 }
 
 header>div {
@@ -61,7 +62,6 @@ header small {
 
 sidebar {
     background-color: black;
-    
     overflow: scroll initial;
  }
 
@@ -98,6 +98,12 @@ sidebar ul li a.active .mdi {
     color: var(--primary);
 }
 
+#caixa_login {
+    background: rgba(0, 0, 0, 0.7);
+    padding: 30px;
+    margin-top: 130px;
+}
+  
 sidebar ul li a:visited,
 sidebar ul li a:focus {
     color: #fff;

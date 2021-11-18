@@ -3,17 +3,22 @@ import { updateColaborador,allColaboradores as allColaboradoresAction,resetColab
 import types from './types';
 import api from '../../../services/api';
 import consts from '../../../consts';
-
+import { notification } from '../../../services/rsuite';
 
 
 export function* allColaboradores(){
-  const { form } = yield select(state => state.colaborador);
+  const { form } = yield select((state) => state.colaborador);
   try{
     yield put(updateColaborador({ form: {...form, filtering: true}}));
     const { data: res } = yield call(api.get,`/colaborador/salao/${consts.salaoId}`);
     yield put(updateColaborador({ form: {...form, filtering: false}}));
-    if(res.error){
-      alert(res.message);
+    if (res.error) {
+      // ALERT DO RSUITE
+      notification('error', {
+        placement: 'topStart',
+        title: 'Ops...',
+        description: res.message,
+      });
       return false;
     }
 
@@ -21,18 +26,27 @@ export function* allColaboradores(){
 
   } catch (err) {
     yield put(updateColaborador({ form: {...form, filtering: false}}));
-    alert(err.message);
+    notification('error', {
+      placement: 'topStart',
+      title: 'Ops...',
+      description: err.message,
+    });
   }
 }
 
 export function* filterColaboradores(){
-  const { form, colaborador } = yield select(state => state.colaborador);
+  const { form, colaborador } = yield select((state) => state.colaborador);
   try{
     yield put(updateColaborador({ form: {...form, filtering: true}}));
     const { data: res } = yield call(api.post,`/colaborador/filter`,{ filters: { email: colaborador.email,status:'A'}, });
     yield put(updateColaborador({ form: {...form, filtering: false}}));
-    if(res.error){
-      alert(res.message);
+    if (res.error) {
+      // ALERT DO RSUITE
+      notification('error', {
+        placement: 'topStart',
+        title: 'Ops...',
+        description: res.message,
+      });
       return false;
     }
     if(res.colaboradores.length > 0) {
@@ -41,11 +55,13 @@ export function* filterColaboradores(){
       yield put(updateColaborador({ form: {...form, disabled: false}}));
     }
 
-    yield put(updateColaborador({ colaboradores: res.colaboradores}));
-
   } catch (err) {
     yield put(updateColaborador({ form: {...form, filtering: false}}));
-    alert(err.message);
+    notification('error', {
+      placement: 'topStart',
+      title: 'Ops...',
+      description: err.message,
+    });
   }
 }
 export function* addColaboradores(){
@@ -69,17 +85,31 @@ export function* addColaboradores(){
     
     yield put(updateColaborador({ form: {...form, saving: false}}));
     
-    if(res.error){
-      alert(res.message);
+    if (res.error) {
+      // ALERT DO RSUITE
+      notification('error', {
+        placement: 'topStart',
+        title: 'Ops...',
+        description: res.message,
+      });
       return false;
     }
     
     yield put(allColaboradoresAction());
     yield put(updateColaborador({ components: {...components, drawer: false}}));
     yield put(resetColaborador());
+    notification('success', {
+      placement: 'topStart',
+      title: 'Feitoooo!!',
+      description: 'Colaborador salvo com sucesso!',
+    });
   } catch (err) {
     yield put(updateColaborador({ form: {...form, saving: false}}));
-    alert(err.message);
+    notification('error', {
+      placement: 'topStart',
+      title: 'Ops...',
+      description: err.message,
+    });;
   }
 }
 export function* unlinkColaborador(){
@@ -89,17 +119,31 @@ export function* unlinkColaborador(){
     const { data: res } = yield call(api.delete,`/colaborador/vinculo/${colaborador.vinculoId}`);
     yield put(updateColaborador({ form: {...form, saving: false}}));
     
-    if(res.error){
-      alert(res.message);
+    if (res.error) {
+      // ALERT DO RSUITE
+      notification('error', {
+        placement: 'topStart',
+        title: 'Ops...',
+        description: res.message,
+      });
       return false;
     }
     
     yield put(allColaboradoresAction());
     yield put(updateColaborador({ components: {...components, drawer: false, confirmDelete: false}}));
     yield put(resetColaborador());
+    notification('success', {
+      placement: 'topStart',
+      title: 'Tudo certo',
+      description: 'O cliente foi desvinculado com sucesso!',
+    });
   } catch (err) {
     yield put(updateColaborador({ form: {...form, saving: false}}));
-    alert(err.message);
+    notification('error', {
+      placement: 'topStart',
+      title: 'Ops...',
+      description: err.message,
+    });
   }
 }
 
@@ -109,16 +153,24 @@ export function* allServicos(){
         yield put(updateColaborador({ form: {...form, filtering: true}}));
         const { data: res } = yield call(api.get,`/salao/servicos/${consts.salaoId}`);
         yield put(updateColaborador({ form: {...form, filtering: false}}));
-
-        if(res.error){
-            alert(res.message);
-            return false;
+        if (res.error) {
+          // ALERT DO RSUITE
+          notification('error', {
+            placement: 'topStart',
+            title: 'Ops...',
+            description: res.message,
+          });
+          return false;
         }
 
         yield put(updateColaborador({ servicos: res.servicos}));
     } catch (err){
         yield put(updateColaborador({ form: {...form, filtering: false}}));
-        alert(err.message);
+        notification('error', {
+          placement: 'topStart',
+          title: 'Ops...',
+          description: err.message,
+        });
     }
 }
 

@@ -16,7 +16,6 @@ const INITIAL_STATE = {
     colaboradores: [],
     servicos : [],
     horarios: [],
-
     horario: {
         dias: [],
         inicio: '',

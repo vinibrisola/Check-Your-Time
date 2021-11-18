@@ -18,8 +18,8 @@ const salao = new Schema({
     pais: String,
   },
   geo: {
-    type: String,
     coordinates: [Number],
+    tipo: String,
   },
   recipientId: String,
   dataCadastro: {
@@ -28,6 +28,7 @@ const salao = new Schema({
   },
 });
 
-salao.index({ coordenadas: '2dsphere' });
+salao.index({ geo: '2dsphere' });
 
 module.exports = mongoose.model('Salao', salao);
+

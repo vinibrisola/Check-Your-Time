@@ -16,6 +16,7 @@ app.set('port', 8000);
 
 
 
+
 /* ROTAS */
 app.use('/salao', require('./src/routes/salao.routes'));
 app.use('/cliente', require('./src/routes/cliente.routes'));
@@ -23,7 +24,7 @@ app.use('/servico', require('./src/routes/servico.routes'));
 app.use('/colaborador', require('./src/routes/colaborador.routes'));
 app.use('/horario', require('./src/routes/horario.routes'));
 app.use('/agendamento', require('./src/routes/agendamento.routes'));
-app.use('/login', require('./src/routes/login.routes'));
+app.use('/avisoVaga', require('./src/routes/avisoVaga.routes'));
 
 app.listen(app.get('port'), () => {
   console.log(`WS Escutando na porta ${app.get('port')}`);

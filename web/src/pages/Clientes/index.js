@@ -1,9 +1,9 @@
 import { useEffect } from 'react';
-import { Button, Drawer, Modal,Icon } from 'rsuite';
+import { Button, Drawer, Modal,Icon,Notification,Message } from 'rsuite';
 import Table from '../../components/Table';
 import 'rsuite/dist/styles/rsuite-default.css';
 import moment from 'moment';
-
+import util from '../../services/util';
 import { useDispatch, useSelector } from 'react-redux';
 import { allClientes, updateCliente, filterClientes, addCliente, unlinkCliente } from '../../store/modules/cliente/actions';
 import cliente from '../../store/modules/cliente/reducer';
@@ -28,6 +28,23 @@ const Clientes = () => {
   }
 
   const save = () => {
+    if (
+      !util.allFields(cliente, [
+        'email',
+        'nome',
+        'telefone',
+        'dataNascimento',
+        'sexo',
+      ])
+    ) {
+      // DISPARAR O ALERTA
+      Notification.error({
+        placement: 'topStart',
+        title: 'Calma lá!',
+        description: 'Antes de prosseguir, preencha todos os campos!',
+      });
+      return false;
+    }
     dispatch(addCliente());
   }; 
 
@@ -45,7 +62,7 @@ const Clientes = () => {
     <div className="col p-5 overflow-auto h-100">
       <Drawer show={components.drawer} size="sm" onHide={() => setComponent('drawer', false)}>
         <Drawer.Body>
-          <h3>{behavior === "create" ? "Criar Novo" : "Atualizar"}</h3>
+          <h3>{behavior === "create" ? "Criar Novo" : "Atualizar"} Cliente</h3>
           <div className="row mt-3">
             <div className="form-group mb-3">
               <b>E-mail</b>
@@ -248,11 +265,11 @@ const Clientes = () => {
             loading={form.filtering}
             data={clientes} 
             config={[
-              {label: 'Nome', key: 'nome', width:200,fixed:true},
-              {label: 'E-mail', key: 'email', width: 200 },
-              {label: 'Telefone', key: 'telefone', width: 200 },
-              {label: 'Sexo', content: (cliente) => cliente.sexo === "M" ? "Masculino" : "Feminino" , width: 200 },
-              {label: 'Data Cadastro', content: (cliente) => moment(cliente.dataCadastro).format('DD/MM/YYYY'), width: 200 }
+              {label: 'Nome', key: 'nome', width:200,fixed:true,sortable: true,},
+              {label: 'E-mail', key: 'email', width: 200,sortable: true, },
+              {label: 'Telefone', key: 'telefone', width: 200,sortable: true, },
+              {label: 'Sexo', content: (cliente) => cliente.sexo === "M" ? "Masculino" : "Feminino" , width: 200,sortable: true, },
+              {label: 'Data Cadastro', content: (cliente) => moment(cliente.dataCadastro).format('DD/MM/YYYY'), width: 200,sortable: true,}
             ]}
             actions={(clientes)=> (
               <Button color="blue" size="xs">Ver informações</Button>
