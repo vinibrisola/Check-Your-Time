@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const URI = 'mongodb+srv://vizuUser:K1WMEDLydiLxHo1v@clusterdev.r6v5h.mongodb.net/vizu?retryWrites=true&w=majority';
+const URI = '';
 
 
 mongoose.set('useNewUrlParser', true);
